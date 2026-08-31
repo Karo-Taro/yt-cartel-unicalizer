@@ -1215,7 +1215,7 @@ class MainWindow(QMainWindow):
             retry = box.addButton("Повторить", QMessageBox.AcceptRole)
             box.addButton("Закрыть", QMessageBox.RejectRole)
             box.exec()
-            if box.clickedButton() is retry and not self.runner.running:
+            if box.clickedButton() is retry:
                 self._retry_job(job)
         else:
             QMessageBox.information(self, "Задача",
@@ -1223,7 +1223,17 @@ class MainWindow(QMainWindow):
                                     f"Сид: {job.seed}")
 
     def _retry_job(self, job: engine.Job) -> None:
-        """Перезапускает одну упавшую задачу с тем же сидом и настройками."""
+        """Перезапускает одну упавшую задачу с тем же сидом и настройками.
+
+        Строки очереди остаются кликабельными и пока идёт подготовка новой
+        партии, а она считается в отдельном потоке — в этот момент runner ещё
+        не «работает». Без проверки на подготовку повтор успевал стартовать,
+        а следом стартовала и подготовленная партия: два ffmpeg писали в один
+        файл и портили его, причём обе задачи рапортовали «готово».
+        """
+        if self.runner.running or self._planning:
+            self.log("Сейчас идёт обработка — повтор будет доступен после неё.")
+            return
         job.status = "ожидает"
         job.progress = 0.0
         job.error = ""

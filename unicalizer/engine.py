@@ -144,12 +144,21 @@ class Runner:
 
     # ------------------------------------------------------------ запуск
 
-    def start(self, jobs: list[Job], params: dict) -> None:
+    def start(self, jobs: list[Job], params: dict) -> bool:
+        """Запускает партию. Возвращает False, если предыдущая ещё идёт.
+
+        Без этой проверки повторный вызов просто затирал ссылку на поток:
+        старая партия продолжала работать незамеченной, а две задачи могли
+        писать в один и тот же файл и портить его.
+        """
+        if self.running:
+            return False
         self._cancel.clear()
         self._thread = threading.Thread(
             target=self._run_all, args=(jobs, params), daemon=True
         )
         self._thread.start()
+        return True
 
     def cancel(self) -> None:
         """Просит остановиться. Возвращается сразу.
