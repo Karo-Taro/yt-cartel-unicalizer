@@ -11,6 +11,20 @@
 
 ---
 
+## Скачать
+
+**[Готовая программа для Windows](https://github.com/Karo-Taro/yt-cartel-unicalizer/releases/latest/download/VideoUnicalizer-1.0.0-Windows.zip)** — 109 МБ.
+Устанавливать ничего не нужно: ни Python, ни ffmpeg, всё уже внутри.
+Распаковать и запустить `Video Unicalizer.exe`.
+
+**[Исходники для macOS](https://github.com/Karo-Taro/yt-cartel-unicalizer/releases/latest/download/VideoUnicalizer-1.0.0-macOS-source.zip)** — 8 МБ.
+Готового `.app` внутри нет: приложение для macOS собирается только на самой
+macOS. Внутри скрипт, который делает это в два двойных клика.
+
+Остальные версии — на [странице релизов](https://github.com/Karo-Taro/yt-cartel-unicalizer/releases).
+
+---
+
 ## Что меняется в каждой копии
 
 | Область | Что делается |
