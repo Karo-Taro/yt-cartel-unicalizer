@@ -85,6 +85,7 @@ def plan_jobs(
     jobs: list[Job] = []
     problems: list[str] = []
     taken: set[str] = set()
+    next_free: dict[str, int] = {}
 
     for source in sources:
         try:
@@ -107,12 +108,18 @@ def plan_jobs(
             except (KeyError, IndexError, ValueError):
                 rendered = f"{stem}_uniq{index}"
             name = safe_name(rendered)
-            candidate = out_root / f"{name}.{container}"
             # Не перетираем ни чужие файлы, ни свои же из этой же партии.
-            counter = 2
-            while candidate.exists() or str(candidate).lower() in taken:
-                candidate = out_root / f"{name}_{counter}.{container}"
+            # Счётчик помним для каждого имени: если шаблон не различает копии
+            # (скажем, просто «{name}»), то без памяти k-я копия заново
+            # перебирала бы все k-1 занятых имён, каждый раз стуча по диску.
+            counter = next_free.get(name, 1)
+            while True:
+                suffix = "" if counter == 1 else f"_{counter}"
+                candidate = out_root / f"{name}{suffix}.{container}"
                 counter += 1
+                if not candidate.exists() and str(candidate).lower() not in taken:
+                    break
+            next_free[name] = counter
             taken.add(str(candidate).lower())
 
             jobs.append(Job(

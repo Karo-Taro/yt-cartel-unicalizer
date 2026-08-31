@@ -1143,8 +1143,10 @@ class MainWindow(QMainWindow):
         # роликов это ощутимо, поэтому уводим в поток, чтобы окно не подвисало.
         out_dir = self.out_dir.text()
         self._planning = True
+        self._abort_plan = False
         self.start_button.setEnabled(False)
         self.preview_button.setEnabled(False)
+        self.cancel_button.setEnabled(True)
         self.status_label.setText("Читаю файлы…")
 
         def prepare() -> None:
@@ -1159,6 +1161,16 @@ class MainWindow(QMainWindow):
     def _on_planned(self, payload) -> None:
         self._planning = False
         jobs, problems, params = payload
+
+        if self._abort_plan:
+            self._abort_plan = False
+            self.start_button.setEnabled(True)
+            self.preview_button.setEnabled(True)
+            self.cancel_button.setEnabled(False)
+            self.status_label.setText("Отменено до начала обработки")
+            self.log("Подготовка прервана, обработка не запускалась.")
+            return
+
         if jobs == "error":
             self.start_button.setEnabled(True)
             self.preview_button.setEnabled(True)
@@ -1187,10 +1199,15 @@ class MainWindow(QMainWindow):
         self.runner.start(jobs, params)
 
     def _rebuild_queue(self, jobs: list[engine.Job]) -> None:
-        while self.queue_layout.count() > 1:
-            item = self.queue_layout.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
+        # Сносим только строки задач. Раньше цикл шёл по индексам и первым же
+        # делом уничтожал надпись «пока пусто», которая лежит в той же колонке,
+        # — после первого запуска она превращалась в мёртвый объект.
+        for index in reversed(range(self.queue_layout.count())):
+            widget = self.queue_layout.itemAt(index).widget()
+            if isinstance(widget, JobRow):
+                self.queue_layout.takeAt(index)
+                widget.deleteLater()
+        self.empty_note.setVisible(not jobs)
         self.rows.clear()
         for job in jobs:
             row = JobRow(job.title)
@@ -1199,6 +1216,14 @@ class MainWindow(QMainWindow):
             self.queue_layout.insertWidget(self.queue_layout.count() - 1, row)
 
     def _cancel(self) -> None:
+        # Отменять нужно и на этапе подготовки: он читает каждый файл через
+        # ffprobe, и на папке в сотни роликов это заметное ожидание, которое
+        # раньше нельзя было прервать — кнопка отмены была недоступна.
+        if self._planning:
+            self._abort_plan = True
+            self.log("Отмена: подготовка будет прервана.")
+            self.status_label.setText("Отмена…")
+            return
         if self.runner.running:
             self.runner.cancel()
             self.log("Отмена…")
