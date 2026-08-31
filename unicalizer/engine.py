@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from . import ffmpeg_builder
+from . import probe as probe_mod
 from .probe import MediaInfo, probe
 
 _NO_WINDOW = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
@@ -173,6 +174,16 @@ class Runner:
 
     def _run_all(self, jobs: list[Job], params: dict) -> None:
         workers = max(1, min(4, int(params.get("output", {}).get("parallel_jobs", 2))))
+
+        # Прогреваем опросы ffmpeg до старта потоков. Кэш у них есть, но он не
+        # держит замок: четыре работника входят одновременно, промахиваются все
+        # и запускают ffmpeg вчетверо чаще, чем нужно.
+        try:
+            probe_mod.nvenc_available()
+            probe_mod.filter_available("rubberband")
+        except Exception:                             # noqa: BLE001
+            pass
+
         try:
             with ThreadPoolExecutor(max_workers=workers) as pool:
                 list(pool.map(lambda job: self._guarded(job, params), jobs))
