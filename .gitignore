@@ -1,0 +1,30 @@
+# Сборки
+dist/
+build/
+*.spec.bak
+
+# Вложенный ffmpeg (167 МБ) — качается отдельно, см. README
+bin/
+
+# Результат работы программы
+output/
+
+# Личные настройки последней сессии (содержат ваши пути)
+last_session.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Окружение и ОС
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Сгенерированная текстура шума (5.4 МБ, воссоздаётся одной командой —
+# команда есть в overlays/положите сюда картинки.txt)
+overlays/шум*.png

@@ -1,0 +1,189 @@
+{
+  "name": "Средняя (баланс)",
+  "params": {
+    "audio": {
+      "enabled": true,
+      "pitch_semitones": [
+        0.18,
+        0.35
+      ],
+      "eq_bands": 4,
+      "eq_gain_db": [
+        -1.8,
+        1.8
+      ],
+      "eq_freq_hz": [
+        120,
+        9000
+      ],
+      "eq_width_q": [
+        0.7,
+        2.2
+      ],
+      "hf_noise": true,
+      "hf_noise_freq_hz": [
+        15800,
+        17000
+      ],
+      "hf_noise_level_db": [
+        -52,
+        -42
+      ],
+      "spectral": true,
+      "spectral_strength": [
+        0.04,
+        0.12
+      ],
+      "micro_echo": true,
+      "micro_echo_ms": [
+        3,
+        9
+      ],
+      "micro_echo_decay": [
+        0.05,
+        0.14
+      ],
+      "highpass_hz": [
+        20,
+        55
+      ],
+      "lowpass_hz": [
+        18500,
+        20000
+      ],
+      "volume_db": [
+        -1.0,
+        0.6
+      ],
+      "limiter": true
+    },
+    "speed": {
+      "enabled": true,
+      "factor": [
+        2.1,
+        2.2
+      ],
+      "jitter": [
+        0.995,
+        1.005
+      ],
+      "preserve_pitch": true
+    },
+    "overlay": {
+      "enabled": false,
+      "path": "",
+      "opacity": [
+        0.025,
+        0.07
+      ],
+      "mode": "cover",
+      "drift": true,
+      "drift_px": [
+        6,
+        22
+      ],
+      "drift_period_s": [
+        7,
+        18
+      ],
+      "rotate_deg": [
+        -4,
+        4
+      ]
+    },
+    "zoom": {
+      "enabled": true,
+      "events": [],
+      "auto": true,
+      "auto_count": [
+        2,
+        4
+      ],
+      "auto_factor": [
+        1.18,
+        1.45
+      ],
+      "auto_dur_s": [
+        0.5,
+        1.4
+      ],
+      "auto_ease": "punch",
+      "auto_margin_s": 1.0
+    },
+    "video_fx": {
+      "enabled": true,
+      "crop_percent": [
+        0.6,
+        2.5
+      ],
+      "rotate_deg": [
+        -0.5,
+        0.5
+      ],
+      "hflip": false,
+      "brightness": [
+        -0.025,
+        0.025
+      ],
+      "contrast": [
+        0.97,
+        1.04
+      ],
+      "saturation": [
+        0.95,
+        1.06
+      ],
+      "gamma": [
+        0.97,
+        1.03
+      ],
+      "hue_deg": [
+        -3.5,
+        3.5
+      ],
+      "grain": true,
+      "grain_strength": [
+        4,
+        12
+      ],
+      "vignette": false,
+      "vignette_angle": [
+        0.05,
+        0.16
+      ],
+      "fps_jitter": true,
+      "fps_choices": []
+    },
+    "encode": {
+      "encoder": "auto",
+      "quality": [
+        20,
+        24
+      ],
+      "keyint_jitter": true,
+      "keyint": [
+        48,
+        120
+      ],
+      "audio_bitrate_kbps": [
+        128,
+        160,
+        192
+      ],
+      "audio_samplerate": [
+        44100,
+        48000
+      ],
+      "strip_metadata": true,
+      "fake_metadata": true,
+      "faststart": true,
+      "max_dimension": 0
+    },
+    "output": {
+      "copies_per_file": 1,
+      "pattern": "{name}_uniq{i}",
+      "container": "mp4",
+      "write_report": true
+    }
+  }
+}

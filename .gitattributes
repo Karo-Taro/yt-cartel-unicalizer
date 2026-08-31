@@ -1,0 +1,16 @@
+# По умолчанию — нормализация переводов строк в репозитории
+* text=auto
+
+# Скрипты для macOS обязаны остаться с переводами строк Unix:
+# с CRLF они просто не запустятся.
+*.command text eol=lf
+*.sh      text eol=lf
+
+# Батники Windows наоборот
+*.bat text eol=crlf
+
+# Двоичное — не трогать
+*.png binary
+*.ico binary
+*.icns binary
+*.mp4 binary
